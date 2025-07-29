@@ -57,7 +57,7 @@ export default function Auth() {
             const querySnapshot = await getDocs(q);
             setUsernameStatus(querySnapshot.empty ? 'available' : 'taken');
             setAnimationState(querySnapshot.empty ? 'available' : 'error');
-          } catch (err: any) {
+          } catch (err: unknown) {
             setError('Error al verificar nombre de usuario');
             setAnimationState('error');
           }
@@ -143,14 +143,15 @@ export default function Auth() {
         });
         setAnimationState('success');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as { code?: string; message?: string };
       setError(
-        err.code === 'auth/wrong-password' ? 'Contraseña incorrecta' :
-        err.code === 'auth/user-not-found' ? 'Usuario no encontrado' :
-        err.code === 'auth/email-already-in-use' ? 'El correo ya está registrado' :
-        err.code === 'permission-denied' ? 'Permisos insuficientes. Verifica las reglas de Firestore.' :
-        err.code === 'auth/too-many-requests' ? 'Demasiados intentos. Intenta de nuevo más tarde.' :
-        err.message || 'Error al procesar'
+        error.code === 'auth/wrong-password' ? 'Contraseña incorrecta' :
+        error.code === 'auth/user-not-found' ? 'Usuario no encontrado' :
+        error.code === 'auth/email-already-in-use' ? 'El correo ya está registrado' :
+        error.code === 'permission-denied' ? 'Permisos insuficientes. Verifica las reglas de Firestore.' :
+        error.code === 'auth/too-many-requests' ? 'Demasiados intentos. Intenta de nuevo más tarde.' :
+        error.message || 'Error al procesar'
       );
       setAnimationState('error');
     } finally {

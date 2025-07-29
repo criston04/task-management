@@ -5,7 +5,7 @@ import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, query, where, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
 import backgroundAnimation from '../../../../public/Stars.json';
 import Lottie from 'lottie-react';
-import { motion } from 'framer-motion';
+
 import { app } from '../../firebase/firebase';
 
 const auth = getAuth(app);
@@ -50,8 +50,9 @@ export default function Dashboard() {
                 ...doc.data(),
             })) as Task[];
             setTasks(taskData);
-        } catch (err: any) {
-            setError(err.message || 'Error al cargar las tareas');
+        } catch (err: unknown) {
+            const error = err as Error;
+            setError(error.message || 'Error al cargar las tareas');
         } finally {
             setLoading(false);
         }
@@ -79,11 +80,12 @@ export default function Dashboard() {
             });
             setNewTask('');
             await fetchTasks(userId);
-        } catch (err: any) {
+        } catch (err: unknown) {
+            const error = err as { code?: string; message?: string };
             setError(
-                err.code === 'permission-denied'
+                error.code === 'permission-denied'
                     ? 'permisos insuficientes. verifica las reglase de firestore.'
-                    : err.message || 'Error al agregar la tarea',
+                    : error.message || 'Error al agregar la tarea',
             );
         } finally {
             setLoading(false);
@@ -95,8 +97,9 @@ export default function Dashboard() {
         try {
             await setDoc(doc(db, 'tasks', taskId), { completed: !completed }, { merge: true });
             await fetchTasks(userId);
-        } catch (err: any) {
-            setError(err.message || 'Error al actualizar la tarea');
+        } catch (err: unknown) {
+            const error = err as Error;
+            setError(error.message || 'Error al actualizar la tarea');
         } finally {
             setLoading(false);
         }
@@ -108,8 +111,9 @@ export default function Dashboard() {
         try {
             await deleteDoc(doc(db, 'tasks', taskId));
             await fetchTasks(userId);
-        } catch (err: any) {
-            setError(err.message || 'Error al eliminar la tarea');
+        } catch (err: unknown) {
+            const error = err as Error;
+            setError(error.message || 'Error al eliminar la tarea');
         } finally {
             setLoading(false);
         }
@@ -118,8 +122,9 @@ export default function Dashboard() {
         try {
             await signOut(auth);
             router.push('/pages/login');
-        } catch (err: any) {
-            setError(err.message || 'Error al cerrar sesión');
+        } catch (err: unknown) {
+            const error = err as Error;
+            setError(error.message || 'Error al cerrar sesión');
         }
     };
 
