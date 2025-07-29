@@ -41,7 +41,6 @@ export default function RootLayout({
             target="_blank"
             rel="noopener noreferrer"
           >
-            Recordatorio iconos creados por Freepik - Flaticon
           </a>
         </footer>
       </body>
