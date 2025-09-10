@@ -1,11 +1,6 @@
 'use client'
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import PhoneBook from './components/PhoneBook';
 
 export default function Home() {
-  const router = useRouter();
-  useEffect(() => {
-    router.replace('/pages/login');
-  }, [router]);
-  return null;
+  return <PhoneBook />;
 }
